@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+		  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+           version="2.5">
+    <servlet>
+        <servlet-name>VFSServlet</servlet-name>
+        <servlet-class>com.adstream.servlets.VFSServlet</servlet-class>
+
+        <init-param>
+            <param-name>FileStorePath</param-name>
+            <param-value>C:\Violet\AssetStore</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>VFSServlet</servlet-name>
+        <url-pattern>/files/*</url-pattern>
+    </servlet-mapping>
+</web-app>
