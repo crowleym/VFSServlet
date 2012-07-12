@@ -1,8 +1,10 @@
 package com.adstream.servlets;
 
+import com.sun.servicetag.UnauthorizedAccessException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.vfs2.*;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 
 import javax.servlet.http.*;
 import java.io.*;
@@ -20,19 +22,31 @@ import java.io.*;
 public class VFSServlet extends HttpServlet {
 
     private String fileStorePath = null; //root directory on filesystem
+    private StandardFileSystemManager fsManager;
 
     public void init() {
         fileStorePath = getServletConfig().getInitParameter("FileStorePath");
+
+        fsManager = new StandardFileSystemManager();
+
+        try {
+            fsManager.setCacheStrategy(CacheStrategy.valueOf(getServletConfig().getInitParameter("CacheStrategy")));
+            fsManager.init();
+        } catch (FileSystemException e) {
+            e.printStackTrace();
+        }
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        FileSystemManager fsManager;
         InputStream in = null;
         OutputStream out = null;
 
         try {
             String vfsFilePath = request.getPathInfo();
+
+            //check we are not trying to breach our directory boundary!
+            if (vfsFilePath.contains("..")) throw new UnauthorizedAccessException();
 
             StringBuilder buff = new StringBuilder();
 
@@ -45,8 +59,6 @@ public class VFSServlet extends HttpServlet {
 
             //build up the required path for Apache Commons VFS
             buff.append("file://").append(fileStorePath).append(vfsFilePath);
-
-            fsManager = VFS.getManager();
 
             FileObject file = fsManager.resolveFile(buff.toString());
             String fileName = file.getName().getBaseName();

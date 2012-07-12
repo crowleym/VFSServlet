@@ -8,9 +8,18 @@
         <servlet-name>VFSServlet</servlet-name>
         <servlet-class>com.adstream.servlets.VFSServlet</servlet-class>
 
+        <!-- File System root path to search -->
         <init-param>
             <param-name>FileStorePath</param-name>
             <param-value>C:\Violet\AssetStore</param-value>
+        </init-param>
+
+        <!-- http://wiki.apache.org/commons/VfsCacheStrategy -->
+        <init-param>
+            <param-name>CacheStrategy</param-name>
+            <param-value>MANUAL</param-value>
+            <!--<param-value>ON_CALL</param-value>-->
+            <!--<param-value>ON_RESOLVE</param-value>-->
         </init-param>
     </servlet>
 
